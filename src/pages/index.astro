@@ -12,15 +12,20 @@
   </head>
   <style></style>
   <body>
-    <div>
-      <img
-        id="nextCurrencyDisplay"
-        src=""
-        alt="Next Currency"
-        style="width: 50px; height: 50px;"
-      />
+    <div class="relative w-full h-full select-none">
+      <canvas id="game-canvas" class="w-screen h-screen"></canvas>
+      <div
+        class="absolute top-2 left-2 w-14 h-14 rounded-full overflow-hidden flex items-center justify-center bg-transparent"
+      >
+        <img
+          id="nextCurrencyDisplay"
+          src=""
+          alt="Next Currency"
+          class="w-full h-auto object-cover"
+          draggable="false"
+        />
+      </div>
     </div>
-    <canvas class="w-screen h-screen" id="game-canvas"></canvas>
   </body>
   <script src="../game.js"></script>
 </html>

@@ -22,6 +22,16 @@ app.stage.addChild(debugRender);
 
 app.stage.sortChildren();
 
+let currentScore = 0;
+const scoreValues = currency.map((_, i) => 2 * (i + 1));
+
+function updateScoreDisplay(score) {
+    const scoreDisplay = document.getElementById('scoreDisplay');
+    scoreDisplay.textContent = `Score: ${score}`;
+}
+
+updateScoreDisplay(currentScore);
+
 function createWorld(RAPIER: typeof import('@dimforge/rapier2d')) {
     const gravity = { x: 0.0, y: 9.81 * 10 * 2};
     const world = new RAPIER.World(gravity);
@@ -133,6 +143,9 @@ import('@dimforge/rapier2d').then(async RAPIER => {
                 nextCurrencyObj.rigidBody.setTranslation({x: midpointX, y: midpointY}, true);
                 objectMap.set(nextCurrencyObj.rigidBody.collider(0).handle, nextCurrencyObj);
                 objects.push(nextCurrencyObj);
+
+                currentScore += scoreValues[a.index];
+                updateScoreDisplay(currentScore);
         });
 
         for(const { sprite, rigidBody } of objects) {

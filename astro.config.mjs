@@ -5,8 +5,8 @@ import tailwind from "@astrojs/tailwind";
 
 // https://astro.build/config
 export default defineConfig({
-  site: "https://kensme.github.io/suika/",
-  base: "/suika",
+  site: "https://kensme.github.io/",
+  base: "/",
   integrations: [tailwind()],
   vite: {
     plugins: [wasm()],

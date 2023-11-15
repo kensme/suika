@@ -9,7 +9,7 @@ class DebugRender extends Graphics {
     }
     debug(buffer: DebugRenderBuffers) {
         this.clear();
-        this.lineStyle(1, 0xff00ff, 1);
+        this.lineStyle(0.001, 0xff00ff, 1);
         for(let i = 0; i < buffer.vertices.length; i += 4) {
             const x1 = buffer.vertices[i];
             const y1 = buffer.vertices[i + 1];

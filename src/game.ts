@@ -2,10 +2,7 @@ import type { DebugRenderBuffers, World } from "@dimforge/rapier2d";
 import { Application, Graphics, Sprite } from "pixi.js";
 import DebugRender from "./debug";
 import { currency, createCurrency, createCurrencyPreview, type Currency } from "./currency";
-import { createWorld, DROP_Y } from "./world";
-
-// container width = 313
-// container height = 351
+import { createWorld, DROP_Y, PX_PER_METER } from "./world";
 
 const app = new Application({
     background: '#1099bb',
@@ -13,7 +10,7 @@ const app = new Application({
     view: document.getElementById('game-canvas') as HTMLCanvasElement,
 });
 
-app.stage.scale.set(1)
+app.stage.scale.set(PX_PER_METER / 3);
 
 const debugRender = new DebugRender();
 app.stage.addChild(debugRender);
@@ -74,14 +71,16 @@ import('@dimforge/rapier2d').then(async RAPIER => {
     let dropPreviewSprite = createCurrencyPreview(currentCurrency, context);
     app.view.addEventListener!('mousemove', (event) => {
         const mousePosX = app.renderer.events.pointer.x / app.stage.scale.x;
-        const dropX = mousePosX < 100 + 25 ? 100 + 25 : mousePosX > 413 - 25 ? 413 - 25 : mousePosX;
+        // const dropX = mousePosX < 100 + 25 ? 100 + 25 : mousePosX > 413 - 25 ? 413 - 25 : mousePosX;
+        const dropX = mousePosX;
         dropPreviewSprite.position.set(dropX, DROP_Y);
     }); 
 
     app.view.addEventListener!('pointerup', async () => {
         const nextCurrencyObj = createCurrency(currentCurrency, context);
         const mousePosX = app.renderer.events.pointer.x / app.stage.scale.x;
-        const dropX = mousePosX < 100 + 25 ? 100 + 25 : mousePosX > 413 - 25 ? 413 - 25 : mousePosX;
+        // const dropX = mousePosX < 100 + 25 ? 100 + 25 : mousePosX > 413 - 25 ? 413 - 25 : mousePosX;
+        const dropX = mousePosX;
         nextCurrencyObj.rigidBody.setTranslation({x: dropX, y: DROP_Y}, true);
         objectMap.set(nextCurrencyObj.rigidBody.collider(0).handle, nextCurrencyObj);
         objects.push(nextCurrencyObj);

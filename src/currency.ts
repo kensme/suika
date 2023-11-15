@@ -1,6 +1,7 @@
 import RAPIER, { RigidBody, type World } from '@dimforge/rapier2d';
 import { BaseTexture, Sprite } from 'pixi.js';
 import type { Context } from './game';
+import { PX_PER_METER } from './world';
 
 export const currency = [
     {
@@ -83,37 +84,45 @@ export type Currency = {
 }
 
 
-const SCALE = 1;
+const SCALE = 1 / PX_PER_METER;
+
+const BASE_SCALE = 1.0; // min size, scales all
+const SCALE_INCREMENT = 0.5; // scales based on index
+
 export function createCurrencyPreview(def: typeof currency[number], context: Context) {
     const sprite = Sprite.from(def.texture);
-    const baseScale = 0.2;
-    const scaleIncrement = 0.1;
-    const SCALE = baseScale + (scaleIncrement * currency.indexOf(def));
-    sprite.scale.set(SCALE);
+    const scale = BASE_SCALE + (SCALE_INCREMENT * currency.indexOf(def));
+
+    const incrementedScale = SCALE * scale;
+    //const incrementedScale = SCALE * currency.indexOf(def);
+    sprite.scale.set(incrementedScale);
     sprite.anchor.set(def.origin[0], def.origin[1]);
     context.app.stage.addChild(sprite);
     return sprite;
 }
 
 export function createCurrency(def: typeof currency[number], context: Context ) {
-    // const SCALE = 0.2 + (0.1 * currency.indexOf(def));
-    // const texture = BaseTexture.from(def.img);
-    const baseScale = 0.2;
-    const scaleIncrement = 0.1;
-    const SCALE = baseScale + (scaleIncrement * currency.indexOf(def));
+    const scale = BASE_SCALE + (SCALE_INCREMENT * currency.indexOf(def));
+
+    const incrementedScale = SCALE * scale;
+
+    /* sprite */
     const sprite = Sprite.from(def.texture);
-    sprite.scale.set(SCALE);
+    sprite.scale.set(incrementedScale);
     sprite.anchor.set(def.origin[0], def.origin[1]);
+    context.app.stage.addChild(sprite);
+
+    /* rigid body */
     const rigidBodyDesc = context.RAPIER.RigidBodyDesc.dynamic().setTranslation(0, 0);
     const rigidBody = context.world.createRigidBody(rigidBodyDesc);
 
-    const colliderDesc = context.RAPIER.ColliderDesc.ball(def.texture.width / 2 * SCALE);
+    /* collider */
+    const colliderDesc = context.RAPIER.ColliderDesc.ball(def.texture.width / 2 * incrementedScale);
     const collider = context.world.createCollider(colliderDesc, rigidBody);
     collider.setTranslation(
-        {x: def.origin[0] * def.texture.width * SCALE, y: def.origin[1] * def.texture.height * SCALE}
+        {x: def.origin[0] * def.texture.width * incrementedScale, y: def.origin[1] * def.texture.height * incrementedScale}
     );
 
-    context.app.stage.addChild(sprite);
 
     collider.setActiveEvents(RAPIER.ActiveEvents.COLLISION_EVENTS);
     
